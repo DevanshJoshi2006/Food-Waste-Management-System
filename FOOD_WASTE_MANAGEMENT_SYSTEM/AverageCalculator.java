@@ -57,7 +57,8 @@ public class AverageCalculator {
                     .getDefault(people);
         }
 
-        return new double[]{
+        return new double[]
+        {
                 roti,
                 dal,
                 sabji,
