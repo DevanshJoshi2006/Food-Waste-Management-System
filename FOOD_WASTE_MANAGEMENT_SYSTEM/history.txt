@@ -1,0 +1,46 @@
+People: 5
+Meal: Rice+Dal
+
+------ REPORT ------
+Dal -> Required: 5 bowls, Prepared: 6 bowls : WASTED (1 bowls extra)
+Rice -> Required: 5 cups, Prepared: 12 cups : WASTED (7 cups extra)
+
+Overall Status: Needs Improvement
+
+--- SUGGESTIONS ---
+Reduce Dal
+Reduce Rice
+
+---------------------
+People: 5
+Meal: AAlu
+
+------ REPORT ------
+AAlu -> Required: 5 bowls, Prepared: 12 bowls : WASTED (7 bowls extra)
+
+Overall Status: Needs Improvement
+
+--- SUGGESTIONS ---
+Reduce AAlu
+
+---------------------
+=== FOOD TO PREPARE ===
+
+Roti: 24.0 pieces
+Sabji: 12.0 bowls
+
+People: 12
+---------------------
+People: 5
+Meal: Dal+Roti
+
+------ REPORT ------
+Roti -> Required: 10 pieces, Prepared: 16 pieces : WASTED (6 pieces extra)
+Dal -> Required: 5 bowls, Prepared: 5 bowls : PERFECT
+
+Overall Status: Needs Improvement
+
+--- SUGGESTIONS ---
+Reduce Roti
+
+---------------------

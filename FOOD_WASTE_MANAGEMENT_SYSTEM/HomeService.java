@@ -1,64 +1,222 @@
 public class HomeService {
 
-    public static void start(String meal, String mode) {
+    public static void start(
+            String meal,
+            String mode,
+            String status
+    ) {
 
-        int people = UI.inputInt("Enter number of people:");
+        int people =
+                UI.inputInt(
+                        "Enter number of people:"
+                );
+
+        // CUSTOM FOOD
+        if(meal.equals("Other")) {
+
+            meal =
+                    CustomMealManager
+                            .getFoodName();
+        }
 
         double[] required;
 
-        
-        if (mode.equals("Normal (Average)")) {
-            required = AverageCalculator.getAvg(meal, people);
-        } 
-        
-        else {
-            required = getCustom(meal, people);
+        // NORMAL MODE
+        if(mode.equals("Normal (Average)")) {
+
+            required =
+                    AverageCalculator
+                            .getAvg(meal, people);
         }
 
-        double[] prepared = getPrepared(meal);
+        // CUSTOM MODE
+        else {
 
-        String result = FoodAnalyzer.analyze(required, prepared, meal, people);
+            required =
+                    getCustom(meal, people);
+        }
+
+        // PREPARING MODE
+        if(status.equals("Preparing")) {
+
+            String prep =
+                    PreparationPlanner
+                            .prepare(
+                                    required,
+                                    meal,
+                                    people
+                            );
+
+            UI.show(prep);
+
+            DatabaseManager.save(prep);
+
+            return;
+        }
+
+        // PREPARED MODE
+        double[] prepared =
+                getPrepared(meal);
+
+        String result =
+                FoodAnalyzer.analyze(
+                        required,
+                        prepared,
+                        meal,
+                        people
+                );
+
+        // SUGGESTIONS
+        result +=
+                "\n\n--- SUGGESTIONS ---\n";
+
+        result +=
+                SuggestionEngine.suggest(
+                        required,
+                        prepared,
+                        meal
+                );
 
         UI.show(result);
+
+        DatabaseManager.save(result);
     }
 
-    // CUSTOM INPUT
-    public static double[] getCustom(String meal, int people) {
+    // ================= CUSTOM FOOD INPUT =================
 
-        double roti = 0, dal = 0, sabji = 0, rice = 0;
+    public static double[] getCustom(
+            String meal,
+            int people
+    ) {
 
-        if (MealParser.hasRoti(meal))
-            roti = UI.inputDouble("Roti per person:") * people;
+        double roti = 0,
+               dal = 0,
+               sabji = 0,
+               rice = 0;
 
-        if (MealParser.hasDal(meal))
-            dal = UI.inputDouble("Dal per person (bowls):") * people;
+        // ROTI
+        if(MealParser.hasRoti(meal)) {
 
-        if (MealParser.hasSabji(meal))
-            sabji = UI.inputDouble("Sabji per person (bowls):") * people;
+            roti =
+                    UI.inputDouble(
+                            "Roti per person:"
+                    ) * people;
+        }
 
-        if (MealParser.hasRice(meal))
-            rice = UI.inputDouble("Rice per person (cups):") * people;
+        // DAL
+        if(MealParser.hasDal(meal)) {
 
-        return new double[]{roti, dal, sabji, rice};
+            dal =
+                    UI.inputDouble(
+                            "Dal per person (bowls):"
+                    ) * people;
+        }
+
+        // SABJI / CUSTOM FOOD
+        if(MealParser.hasSabji(meal)) {
+
+            String label = "Sabji";
+
+            if(!meal.contains("Sabji")
+               && !meal.contains("Dal")
+               && !meal.contains("Rice")
+               && !meal.contains("Roti")) {
+
+                label =
+                        CustomMealManager
+                                .getName();
+            }
+
+            sabji =
+                    UI.inputDouble(
+                            label
+                            + " per person (bowls):"
+                    ) * people;
+        }
+
+        // RICE
+        if(MealParser.hasRice(meal)) {
+
+            rice =
+                    UI.inputDouble(
+                            "Rice per person (cups):"
+                    ) * people;
+        }
+
+        return new double[]{
+                roti,
+                dal,
+                sabji,
+                rice
+        };
     }
 
-    // PREPARED FOOD INPUT
-    public static double[] getPrepared(String meal) {
+    // ================= PREPARED FOOD INPUT =================
 
-        double roti = 0, dal = 0, sabji = 0, rice = 0;
+    public static double[] getPrepared(
+            String meal
+    ) {
 
-        if (MealParser.hasRoti(meal))
-            roti = UI.inputDouble("Enter prepared Roti:");
+        double roti = 0,
+               dal = 0,
+               sabji = 0,
+               rice = 0;
 
-        if (MealParser.hasDal(meal))
-            dal = UI.inputDouble("Enter prepared Dal (bowls):");
+        // ROTI
+        if(MealParser.hasRoti(meal)) {
 
-        if (MealParser.hasSabji(meal))
-            sabji = UI.inputDouble("Enter prepared Sabji (bowls):");
+            roti =
+                    UI.inputDouble(
+                            "Enter prepared Roti:"
+                    );
+        }
 
-        if (MealParser.hasRice(meal))
-            rice = UI.inputDouble("Enter prepared Rice (cups):");
+        // DAL
+        if(MealParser.hasDal(meal)) {
 
-        return new double[]{roti, dal, sabji, rice};
+            dal =
+                    UI.inputDouble(
+                            "Enter prepared Dal:"
+                    );
+        }
+
+        // SABJI / CUSTOM FOOD
+        if(MealParser.hasSabji(meal)) {
+
+            String label = "Sabji";
+
+            if(!meal.contains("Sabji")
+               && !meal.contains("Dal")
+               && !meal.contains("Rice")
+               && !meal.contains("Roti")) {
+
+                label =
+                        CustomMealManager
+                                .getName();
+            }
+
+            sabji =
+                    UI.inputDouble(
+                            "Enter prepared "
+                            + label
+                            + ":"
+                    );
+        }
+
+        // RICE
+        if(MealParser.hasRice(meal)) {
+
+            rice =
+                    UI.inputDouble(
+                            "Enter prepared Rice:"
+                    );
+        }
+
+        return new double[]{
+                roti,
+                dal,
+                sabji,
+                rice
+        };
     }
 }

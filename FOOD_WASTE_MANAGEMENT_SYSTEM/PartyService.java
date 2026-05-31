@@ -1,24 +1,66 @@
 public class PartyService {
 
-    public static void start(String meal, String mode) {
+    public static void start(
+            String meal,
+            String mode,
+            String status
+    ) {
 
-        int people = UI.inputInt("Enter number of guests:");
+        String choice =
+                UI.partyMode();
 
-        double[] required;
+        // PEOPLE → FOOD
+        if(choice.equals("People to Food")) {
 
-    
-        if (mode.equals("Normal (Average)")) {
-            required = AverageCalculator.getAvg(meal, people);
-        } 
-     
-        else {
-            required = HomeService.getCustom(meal, people);
+            int people =
+                    UI.inputInt(
+                            "Enter number of guests:"
+                    );
+
+            double[] required;
+
+            if(mode.equals("Normal (Average)")) {
+
+                required =
+                        AverageCalculator
+                                .getAvg(meal, people);
+
+            } else {
+
+                required =
+                        HomeService
+                                .getCustom(meal, people);
+            }
+
+            String result =
+                    PreparationPlanner.prepare(
+                            required,
+                            meal,
+                            people
+                    );
+
+            UI.show(result);
+
+            DatabaseManager.save(result);
         }
 
-        double[] prepared = HomeService.getPrepared(meal);
+        // FOOD → PEOPLE
+        else {
 
-        String result = FoodAnalyzer.analyze(required, prepared, meal, people);
+            double[] prepared =
+                    HomeService
+                            .getPrepared(meal);
 
-        UI.show(result);
+            String result =
+                    PartyEstimator
+                            .estimate(
+                                    meal,
+                                    prepared
+                            );
+
+            UI.show(result);
+
+            DatabaseManager.save(result);
+        }
     }
 }
